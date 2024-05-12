@@ -1,16 +1,28 @@
 <script setup lang="ts">
-const showId = 3116541
+import { onMounted, reactive } from 'vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 import imagePath from '@/assets/img/taskmaster-bg.jpeg'
-import { reactive } from 'vue'
+
+const ui = reactive({
+  showId: '',
+  selectedRegion: 'US',
+  selectedSeason: 17,
+
+  showData: {}
+})
+
+// Sample fetch of data from URL.
 // fetch(url, { method: 'Get' })
 //   .then((res) => res.json())
 //   .then((json) => {
-//     console.log(json)
+//     ui.showData = {...json}
 //   })
 
-const ui = reactive({
-  selectedRegion: 'US',
-  selectedSeason: 17
+onMounted(() => {
+  if (route.params.showId) {
+    ui.showId = route.params.showId.toString()
+  }
 })
 </script>
 

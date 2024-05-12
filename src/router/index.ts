@@ -11,9 +11,9 @@ const router = createRouter({
     },
 
     {
-      path: '/show/:episodeId',
+      path: '/show/:showId',
       name: 'Show',
-      alias: ['/tvshow/:episodeId', '/tv-show/:episodeId'],
+      alias: ['/tvshow/:showId', '/tv-show/:showId'],
       component: () => import('../views/Show/Show.vue')
     },
 

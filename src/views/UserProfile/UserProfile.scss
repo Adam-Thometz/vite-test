@@ -8,9 +8,10 @@ main.edit-profile {
     background: #fafafa;
     padding: 20px;
     width: 100%;
-    max-width: 460px;
+    max-width: 720px;
     display: grid;
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
     fieldset {
       .input-label {
         display: block;
@@ -29,6 +30,7 @@ main.edit-profile {
       }
     }
     fieldset.checkboxes {
+      grid-column: span 2;
       legend {
         display: block;
         text-transform: uppercase;
@@ -64,6 +66,7 @@ main.edit-profile {
       }
     }
     .button-holder {
+      grid-column: span 2;
       display: flex;
       justify-content: flex-end;
       gap: 10px;

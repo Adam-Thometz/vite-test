@@ -130,6 +130,4 @@ const saveUserProfile = () => {
   </main>
 </template>
 
-<style lang="scss" scoped src="./UserProfile.scss">
-
-</style>
+<style lang="scss" scoped src="./UserProfile.scss"></style>

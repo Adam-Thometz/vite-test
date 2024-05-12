@@ -1,0 +1,174 @@
+@import '@/assets/scss/abstracts/variables';
+@import '@/assets/scss/abstracts/mixins';
+
+main.show {
+  font-size: 18px;
+  color: #363636;
+  padding-bottom: 160px;
+
+  h1 {
+    color: white;
+    text-shadow: 1px 1px 1px black;
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+  p {
+    line-height: 140%;
+  }
+
+  hgroup {
+    height: 22vw;
+    min-height: 300px;
+    background-position: top center;
+    background-size: cover;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+  }
+
+  section {
+    padding: 20px;
+    select {
+      font-size: 1.15rem;
+      padding: 0.25em 1em;
+      margin-bottom: 1em;
+    }
+  }
+
+  .description-and-quickinfo {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 40px;
+
+    .description {
+      order: 1;
+      p {
+        max-width: 73ch;
+      }
+    }
+    .quickinfo {
+      background-color: #efefef;
+      padding: 20px;
+      order: 2;
+      grid-row: span 2;
+      dt {
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.75em;
+      }
+      dd {
+        font-size: 1.15em;
+        margin-bottom: 15px;
+      }
+    }
+    .info-links {
+      gap: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      order: 3;
+      align-items: center;
+      a {
+        @include button();
+      }
+    }
+  }
+
+  .stream-options {
+    padding: 20px;
+    ol {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      li {
+        flex-basis: 280px;
+        flex-grow: 1;
+        flex-shrink: 1;
+        font-size: 0.875rem;
+        border: 1px solid #aaa;
+        display: flex;
+        flex-direction: column;
+      }
+      h3 {
+        font-size: 150%;
+        margin-bottom: 10px;
+        background-color: #ccc;
+        padding: 10px;
+      }
+      dl {
+        padding: 10px;
+      }
+      dt {
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+      dd {
+        margin-bottom: 8px;
+        font-size: 125%;
+      }
+      .link-holder {
+        padding: 10px;
+        margin-top: auto;
+      }
+      a {
+        @include button();
+      }
+    }
+  }
+
+  ol.episode-list {
+    display: grid;
+    gap: 40px;
+
+    li {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      padding-bottom: 20px;
+      // border-bottom: 1px solid #ccc;
+      &:after {
+        content: '';
+        display: block;
+        height: 3px;
+        background: #ccc;
+        width: 100%;
+        max-width: 6ch;
+      }
+    }
+    .text-wrapper {
+      display: grid;
+      gap: 10px;
+    }
+    .title-wrapper {
+      display: flex;
+      gap: 10px;
+      align-items: end;
+    }
+    .episode-number {
+      font-family: monospace;
+    }
+    .episode-title {
+      font-size: 135%;
+    }
+    time {
+      font-weight: 625;
+    }
+    .overview {
+      // line-height: 145%;
+      p {
+        max-width: 72ch;
+      }
+    }
+    .episode-links {
+      grid-column: span 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      a {
+        @include button();
+      }
+    }
+  }
+}

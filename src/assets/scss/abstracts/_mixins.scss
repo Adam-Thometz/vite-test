@@ -1,0 +1,13 @@
+@mixin button() {
+  font-size: 1rem;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  padding: 0.35em 1em;
+  border: 1px solid currentColor;
+  svg {
+    width: 2rem;
+    height: 2rem;
+    fill: currentColor;
+  }
+}

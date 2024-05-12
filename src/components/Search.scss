@@ -1,0 +1,32 @@
+form {
+  padding: 0;
+  input[type='search'] {
+    display: inline-flex;
+    max-width: 220px;
+  }
+}
+fieldset {
+  display: grid;
+  grid-template-columns: 1fr 60px;
+  input {
+    font-size: 1rem;
+    padding: 0.75em 1.25em;
+    border: 1px solid #aaa;
+  }
+  button {
+    // border: 2px solid hsl(160, 100%, 37%);
+    // background: transparent;
+    border: none;
+    background: hsl(160, 100%, 37%);
+    color: hsl(160, 100%, 95%);
+    font-size: 1.15rem;
+    font-weight: 750;
+    cursor: pointer;
+    transition: all 0.3s linear;
+    &:hover,
+    &:focus {
+      color: hsl(160, 100%, 12%);
+      background: hsl(160, 100%, 52%);
+    }
+  }
+}

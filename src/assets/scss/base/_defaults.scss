@@ -1,0 +1,22 @@
+[v-cloak] {
+  display: none !important;
+}
+
+html {
+  font-size: 100%;
+}
+html,
+body,
+input,
+select,
+button {
+  font-family: $font-family;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+img {
+  max-width: 100%;
+}

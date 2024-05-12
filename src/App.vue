@@ -5,9 +5,7 @@ import Search from './components/Search/Search.vue'
 
 <template>
   <header>
-
     <div class="wrapper">
-      
       <Search />
 
       <nav>
@@ -40,7 +38,7 @@ nav {
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-text);
+  color: #454545;
 }
 
 nav a.router-link-exact-active:hover {
@@ -59,6 +57,7 @@ nav a:first-of-type {
 
 @media (min-width: 1024px) {
   header {
+    padding-left: 20px;
     padding-top: 45vh;
     padding-right: 40px;
   }

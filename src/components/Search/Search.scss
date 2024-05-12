@@ -2,7 +2,9 @@ form {
   padding: 0;
   input[type='search'] {
     display: inline-flex;
-    max-width: 220px;
+  }
+  @media (max-width: 1023px) {
+    padding: 40px 20px;
   }
 }
 fieldset {

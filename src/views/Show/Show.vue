@@ -2,14 +2,16 @@
 import { onMounted, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
-import imagePath from '@/assets/img/taskmaster-bg.jpeg'
+// import imagePath from '@/assets/img/taskmaster-bg.jpeg'
+import WATCHMODE_API_KEY from "@/secret"
 
 const ui = reactive({
   showId: '',
   selectedRegion: 'US',
   selectedSeason: 17,
 
-  showData: {}
+  showData: {},
+  episodeData: []
 })
 
 // Sample fetch of data from URL.
@@ -19,9 +21,28 @@ const ui = reactive({
 //     ui.showData = {...json}
 //   })
 
-onMounted(() => {
+onMounted(async () => {
   if (route.params.showId) {
     ui.showId = route.params.showId.toString()
+    const showUrl = `https://api.watchmode.com/v1/title/${ui.showId}/details/?apiKey=${WATCHMODE_API_KEY}`
+    const episodeUrl = `https://api.watchmode.com/v1/title/${ui.showId}/episodes/?apiKey=${WATCHMODE_API_KEY}`
+    try {
+      const showData = await (await fetch(showUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authentication": "Bearer <token>"
+        }
+      })).json()
+      const episodeData = await (await fetch(episodeUrl)).json()
+      debugger
+      if (!showData.title) {
+        throw new Error("Title not found")
+      }
+      ui.showData = showData
+      ui.episodeData = episodeData
+    } catch (e) {
+      console.error(e)
+    }
   }
 })
 </script>
@@ -29,33 +50,31 @@ onMounted(() => {
 <template>
   <main class="show">
     <!-- Title & Cover Image-->
-    <hgroup :style="{ backgroundImage: `url(${imagePath})` }">
-      <h1>Taskmaster</h1>
+    <hgroup :style="{ backgroundImage: `url(${ui.showData.backdrop})` }">
+      <h1>{{ui.showData.title}}</h1>
     </hgroup>
 
     <!-- Series Info -->
     <section class="description-and-quickinfo">
       <dl class="quickinfo">
         <dt>Release Date</dt>
-        <dd>July 7th, 2015</dd>
+        <dd>{{ui.showData.release_date}}</dd>
         <dt>Episodes</dt>
         <dd>263</dd>
         <dt>Network(s)</dt>
-        <dd>Channel 4, Dave</dd>
+        <dd>{{ui.showData.network_names}}</dd>
         <dt>Avg Runtime</dt>
-        <dd>60 minutes</dd>
+        <dd>{{ui.showData.runtime_minutes}} minutes</dd>
       </dl>
 
       <div class="description">
         <p>
-          Greg Davies is the Taskmaster, and with the help of his ever-loyal assistant Alex Horne,
-          they will set out to test the wiles, wit, wisdom and skills of five hyper-competitive
-          comedians. Who will be crowned the Taskmaster champion in this brand new game show?
+          {{ui.showData.plot_overview}}
         </p>
       </div>
 
       <div class="info-links">
-        <a href="https://www.youtube.com/watch?v=9Ch4m2kiTdw">
+        <a :href="ui.showData.trailer">
           <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <title>YouTube</title>
             <path
@@ -64,7 +83,7 @@ onMounted(() => {
           </svg>
           <span>Watch Trailer</span>
         </a>
-        <a href="https://www.imdb.com/title/tt4934214">
+        <a :href="`https://www.imdb.com/title/${ui.showData.imdb_id}`">
           <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <title>IMDb</title>
             <path
@@ -73,7 +92,7 @@ onMounted(() => {
           </svg>
           <span>IMDb page</span>
         </a>
-        <a href="https://www.themoviedb.org/tv/63404-taskmaster">
+        <a :href="`https://www.themoviedb.org/tv/${ui.showData.tmdb_id}`">
           <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <title>The Movie Database</title>
             <path
@@ -198,10 +217,10 @@ onMounted(() => {
 
     <section class="epsiodes">
       <h2>
-        Taskmaster Episodes
-        <span>(Season 17)</span>
+        {{ui.showData.title}} Episodes
+        <span>(All Seasons)</span>
       </h2>
-      <select v-model="ui.selectedSeason">
+      <!-- <select v-model="ui.selectedSeason">
         <option value="17">Season 17</option>
         <option value="16">Season 16</option>
         <option value="15">Season 15</option>
@@ -220,7 +239,7 @@ onMounted(() => {
         <option value="2">Season 2</option>
         <option value="1">Season 1</option>
         <option value="all">ALL SEASONS</option>
-      </select>
+      </select> -->
 
       <!--
         RULES:
@@ -237,117 +256,27 @@ onMounted(() => {
       -->
 
       <ol class="episode-list">
-        <li>
+        <li v-for="episode in ui.episodeData">
           <figure>
-            <img src="@/assets/img/17x01.webp" title="Episode 17x01: Grappling With My Life" />
+            <img :src="episode.thumbnail_url" :title="`Episode ${episode.season_number}x${episode.episode_number}: ${episode.name}`" />
           </figure>
           <div class="text-wrapper">
             <div class="title-wrapper">
-              <span class="episode-number">17x01</span>
-              <span class="episode-title">Grappling With My Life</span>
+              <span class="episode-number">{{ `${episode.season_number}x${episode.episode_number}` }}</span>
+              <span class="episode-title">{{episode.name}}</span>
             </div>
 
-            <time datetime="2024-03-28">March 28th, 2024</time>
+            <time :datetime="episode.release_date">{{episode.release_date}}</time>
             <div class="overview">
               <p>
-                Joanne McNally, John Robins, Nick Mohammed, Sophie Willan and Steve Pemberton are
-                hoping they'll still have a career after tasks involving roller blinds, a floating
-                primate and, as is traditional, eggs.
+                {{episode.overview}}
               </p>
             </div>
           </div>
           <div class="episode-links">
-            <a href="#">
-              <span>Watch on Netflix</span>
+            <a href="#" v-for="source in episode.sources.slice(0, 6)" :key="source.source_id">
+              <span>Watch on {{source.name}}</span>
               <span>→</span>
-            </a>
-            <a href="#">
-              <span>Watch on Pluto</span>
-              <span>→</span>
-            </a>
-            <a href="#">
-              <span>Watch on Peacock</span>
-              <span>💲</span>
-            </a>
-            <a href="#">
-              <span>Buy on Amazon</span>
-              <span>$0.99</span>
-            </a>
-          </div>
-        </li>
-        <li>
-          <figure>
-            <img src="@/assets/img/17x02.webp" title="Episode 17x01: Grappling With My Life" />
-          </figure>
-          <div class="text-wrapper">
-            <div class="title-wrapper">
-              <span class="episode-number">17x02</span>
-              <span class="episode-title">Jumungo</span>
-            </div>
-
-            <time datetime="2024-04-04">April 4th, 2024</time>
-            <div class="overview">
-              <p>
-                Nick Mohammed sheathes a water bottle with a sock, Sophie Willan attempts to take
-                flight, and John Robins puts his faith in honey, as Taskmaster Greg Davies sits in
-                judgement
-              </p>
-            </div>
-          </div>
-          <div class="episode-links">
-            <a href="#">
-              <span>Watch on Netflix</span>
-              <span>→</span>
-            </a>
-            <a href="#">
-              <span>Watch on Pluto</span>
-              <span>→</span>
-            </a>
-            <a href="#">
-              <span>Watch on Peacock</span>
-              <span>💲</span>
-            </a>
-            <a href="#">
-              <span>Buy on Amazon</span>
-              <span>$0.99</span>
-            </a>
-          </div>
-        </li>
-        <li>
-          <figure>
-            <img src="@/assets/img/17x03.webp" title="Episode 17x03: Some Impropriety?" />
-          </figure>
-          <div class="text-wrapper">
-            <div class="title-wrapper">
-              <span class="episode-number">17x03</span>
-              <span class="episode-title">Some Impropriety?</span>
-            </div>
-
-            <time datetime="2024-04-04">April 11th, 2024</time>
-            <div class="overview">
-              <p>
-                Will Steve Pemberton's no-vowels gamble pay off? Why does Sophie Willan love to
-                balance items on her head? What does Nick Mohammed think is going to happen to those
-                eggs? And why is Joanne McNally sniffing Little Alex Horne's beard?
-              </p>
-            </div>
-          </div>
-          <div class="episode-links">
-            <a href="#">
-              <span>Watch on Netflix</span>
-              <span>→</span>
-            </a>
-            <a href="#">
-              <span>Watch on Pluto</span>
-              <span>→</span>
-            </a>
-            <a href="#">
-              <span>Watch on Peacock</span>
-              <span>💲</span>
-            </a>
-            <a href="#">
-              <span>Buy on Amazon</span>
-              <span>$0.99</span>
             </a>
           </div>
         </li>
